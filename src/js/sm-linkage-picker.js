@@ -13326,16 +13326,16 @@ $.smConfig.rawCitiesData = [
         return [""];
     };
 
-    var raw = $.smConfig.rawCitiesData;
-    var provinces = raw.map(function(d) {
-        return d.name;
-    });
-    var initCities = sub(raw[0]);
-    var initDistricts = [""];
+    // var raw = $.smConfig.rawCitiesData;
+    // var provinces = raw.map(function(d) {
+    //     return d.name;
+    // });
+    // var initCities = sub(raw[0]);
+    // var initDistricts = [""];
 
-    var currentProvince = provinces[0];
-    var currentCity = initCities[0];
-    var currentDistrict = initDistricts[0];
+    // var currentProvince = provinces[0];
+    // var currentCity = initCities[0];
+    // var currentDistrict = initDistricts[0];
 
     var t;
     var defaults = {
@@ -13346,6 +13346,10 @@ $.smConfig.rawCitiesData = [
         onChange: function (picker, values, displayValues) {
             var newProvince = picker.cols[0].value;
             var newCity;
+            var currentProvince = picker.params.currentProvince;
+            var currentCity = picker.params.currentCity;
+            var currentDistrict = picker.params.currentDistrict;
+
             if(newProvince !== currentProvince) {
                 // 如果Province变化，节流以提高reRender性能
                 clearTimeout(t);
@@ -13357,8 +13361,8 @@ $.smConfig.rawCitiesData = [
                     var newDistricts = picker.params.getCols(2, newCity, newProvince);
                     picker.cols[1].replaceValues(newCities);
                     picker.cols[2].replaceValues(newDistricts);
-                    currentProvince = newProvince;
-                    currentCity = newCity;
+                    picker.params.currentProvince = newProvince;
+                    picker.params.currentCity = newCity;
                     picker.updateValue();
                 }, 200);
                 return;
@@ -13366,37 +13370,37 @@ $.smConfig.rawCitiesData = [
             newCity = picker.cols[1].value;
             if(newCity !== currentCity) {
                 picker.cols[2].replaceValues(picker.params.getCols(2, newCity, newProvince));
-                currentCity = newCity;
+                picker.params.currentCity = newCity;
                 picker.updateValue();
             }
         },
 
-        cols: [
-        {
-            textAlign: 'center',
-            values: provinces,
-            value: "",
-            displayValues: "",
-            displayValue: '123',
-            cssClass: "col-province"
-        },
-        {
-            textAlign: 'center',
-            values: initCities,
-            value: "",
-            displayValues: "",
-            displayValue: '123',
-            cssClass: "col-city"
-        },
-        {
-            textAlign: 'center',
-            values: initDistricts,
-            value: "",
-            displayValues: "",
-            displayValue: '123',
-            cssClass: "col-district"
-        }
-        ],
+        // cols: [
+        // {
+        //     textAlign: 'center',
+        //     values: provinces,
+        //     value: "",
+        //     displayValues: "",
+        //     displayValue: '123',
+        //     cssClass: "col-province"
+        // },
+        // {
+        //     textAlign: 'center',
+        //     values: initCities,
+        //     value: "",
+        //     displayValues: "",
+        //     displayValue: '123',
+        //     cssClass: "col-city"
+        // },
+        // {
+        //     textAlign: 'center',
+        //     values: initDistricts,
+        //     value: "",
+        //     displayValues: "",
+        //     displayValue: '123',
+        //     cssClass: "col-district"
+        // }
+        // ],
         getCols: function (cols, parent, ancestor) {
             return ["第二列","第二列"]
         }
@@ -13404,6 +13408,7 @@ $.smConfig.rawCitiesData = [
     };
 
     $.fn.cityPicker = function(params) {
+        // console.log(params)
         return this.each(function() {
             if(!this) return;
             var p = $.extend(defaults, params);
@@ -13418,17 +13423,17 @@ $.smConfig.rawCitiesData = [
             if (p.value) {
                 //p.value = val.split(" ");
                 if(p.value[0]) {
-                    currentProvince = p.value[0];
+                    params.currentProvince = p.value[0];
                     p.cols[1].values = getCities(p.value[0]);
                 }
                 if(p.value[1]) {
-                    currentCity = p.value[1];
+                    params.currentCity = p.value[1];
                     p.cols[2].values = getDistricts(p.value[0], p.value[1]);
                 } else {
                     p.cols[2].values = getDistricts(p.value[0], p.cols[1].values[0]);
                 }
                 !p.value[2] && (p.value[2] = '');
-                currentDistrict = p.value[2];
+                params.currentDistrict = p.value[2];
             }
             $(this).picker(p);
         });

@@ -85,14 +85,50 @@
                     return [""]
             }
         }
+
+        var provinces = raw.map(function(d) {
+            return d.name;
+        });
+        var initCities = sub(raw[0]);
+        var initDistricts = [""];
+
         $("#city-picker").cityPicker({
-          toolbarTemplate: '<header class="bar bar-nav">\
-          <button class="button button-link pull-right close-picker">确定</button>\
-          <h1 class="title">请选择</h1>\
-          </header>',
-          getCols: function (cols, parent, ancestor) {
-            return getCity(cols, parent, ancestor);
-          }
+            toolbarTemplate: '<header class="bar bar-nav">\
+            <button class="button button-link pull-right close-picker">确定</button>\
+            <h1 class="title">请选择</h1>\
+            </header>',
+            getCols: function (cols, parent, ancestor) {
+                return getCity(cols, parent, ancestor);
+            },
+            cols: [
+                {
+                    textAlign: 'center',
+                    values: provinces,
+                    value: "",
+                    displayValues: "",
+                    displayValue: '123',
+                    cssClass: "col-province"
+                },
+                {
+                    textAlign: 'center',
+                    values: initCities,
+                    value: "",
+                    displayValues: "",
+                    displayValue: '123',
+                    cssClass: "col-city"
+                },
+                {
+                    textAlign: 'center',
+                    values: initDistricts,
+                    value: "",
+                    displayValues: "",
+                    displayValue: '123',
+                    cssClass: "col-district"
+                }
+            ],
+            currentProvince: provinces[0],
+            currentCity: initCities[0],
+            currentDistrict: initDistricts[0]
         });
     </script>
 
