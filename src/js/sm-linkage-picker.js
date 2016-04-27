@@ -13288,43 +13288,43 @@ $.smConfig.rawCitiesData = [
 
 + function($) {
     "use strict";
-    var format = function(data) {
-        var result = [];
-        for(var i=0;i<data.length;i++) {
-            var d = data[i];
-            if(d.name === "请选择") continue;
-            result.push(d.name);
-        }
-        if(result.length) return result;
-        return [""];
-    };
+    // var format = function(data) {
+    //     var result = [];
+    //     for(var i=0;i<data.length;i++) {
+    //         var d = data[i];
+    //         if(d.name === "请选择") continue;
+    //         result.push(d.name);
+    //     }
+    //     if(result.length) return result;
+    //     return [""];
+    // };
 
-    var sub = function(data) {
-        if(!data.sub) return [""];
-        return format(data.sub);
-    };
+    // var sub = function(data) {
+    //     if(!data.sub) return [""];
+    //     return format(data.sub);
+    // };
 
-    var getCities = function(d) {
-        for(var i=0;i< raw.length;i++) {
-            if(raw[i].name === d){
-                return sub(raw[i]);
-            } 
-        }
-        return [""];
-    };
+    // var getCities = function(d) {
+    //     for(var i=0;i< raw.length;i++) {
+    //         if(raw[i].name === d){
+    //             return sub(raw[i]);
+    //         } 
+    //     }
+    //     return [""];
+    // };
 
-    var getDistricts = function(p, c) {
-        for(var i=0;i< raw.length;i++) {
-            if(raw[i].name === p) {
-                for(var j=0;j< raw[i].sub.length;j++) {
-                    if(raw[i].sub[j].name === c) {
-                        return sub(raw[i].sub[j]);
-                    }
-                }
-            }
-        }
-        return [""];
-    };
+    // var getDistricts = function(p, c) {
+    //     for(var i=0;i< raw.length;i++) {
+    //         if(raw[i].name === p) {
+    //             for(var j=0;j< raw[i].sub.length;j++) {
+    //                 if(raw[i].sub[j].name === c) {
+    //                     return sub(raw[i].sub[j]);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return [""];
+    // };
 
     // var raw = $.smConfig.rawCitiesData;
     // var provinces = raw.map(function(d) {
@@ -13344,6 +13344,7 @@ $.smConfig.rawCitiesData = [
         rotateEffect: false,  //为了性能
 
         onChange: function (picker, values, displayValues) {
+
             var newProvince = picker.cols[0].value;
             var newCity;
             var currentProvince = picker.params.currentProvince;
@@ -13378,26 +13379,26 @@ $.smConfig.rawCitiesData = [
         // cols: [
         // {
         //     textAlign: 'center',
-        //     values: provinces,
-        //     value: "",
-        //     displayValues: "",
-        //     displayValue: '123',
+        //     values: [""],
+        //     // value: "",
+        //     // displayValues: [""],
+        //     // displayValue: '123',
         //     cssClass: "col-province"
         // },
         // {
         //     textAlign: 'center',
-        //     values: initCities,
-        //     value: "",
-        //     displayValues: "",
+        //     values: [""],
+        //     // value: "",
+        //     displayValues: [""],
         //     displayValue: '123',
         //     cssClass: "col-city"
         // },
         // {
         //     textAlign: 'center',
-        //     values: initDistricts,
-        //     value: "",
-        //     displayValues: "",
-        //     displayValue: '123',
+        //     values: [""],
+        //     // value: "",
+        //     // displayValues: [""],
+        //     // displayValue: '123',
         //     cssClass: "col-district"
         // }
         // ],
@@ -13410,9 +13411,10 @@ $.smConfig.rawCitiesData = [
     $.fn.cityPicker = function(params) {
         // console.log(params)
         return this.each(function() {
+
             if(!this) return;
             var p = $.extend(defaults, params);
-            //计算value
+            // 计算value
             if (p.value) {
                 $(this).val(p.value.join(' '));
             } else {
@@ -13423,18 +13425,20 @@ $.smConfig.rawCitiesData = [
             if (p.value) {
                 //p.value = val.split(" ");
                 if(p.value[0]) {
-                    params.currentProvince = p.value[0];
-                    p.cols[1].values = getCities(p.value[0]);
+                    p.currentProvince = p.value[0];
+                    p.cols[1].values = p.getCols(1,p.value[0]);
                 }
                 if(p.value[1]) {
                     params.currentCity = p.value[1];
-                    p.cols[2].values = getDistricts(p.value[0], p.value[1]);
+                    p.cols[2].values = p.getCols(2,p.value[0], p.value[1]);
                 } else {
-                    p.cols[2].values = getDistricts(p.value[0], p.cols[1].values[0]);
+                    p.cols[2].values = p.getCols(2,p.value[0], p.cols[1].values[0]);
                 }
                 !p.value[2] && (p.value[2] = '');
-                params.currentDistrict = p.value[2];
+                // alert(p.value[2])
+                p.currentDistrict = p.value[2];
             }
+
             $(this).picker(p);
         });
     };
