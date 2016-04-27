@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>sm-linkage-picker</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+
+  </head>
+  <body>
+    <div class="page-group">
+        <div class="page page-current">
+              <header class="bar bar-nav">
+                <h1 class='title'>请选择</h1>
+              </header>
+              <div class="content">
+                <!-- <div class="content-block-title">请选择</div> -->
+                <div class="content-block">
+                  <div class="list-block">
+                    <ul>
+                      <!-- Text inputs -->
+                      <li>
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title label">收货地址</div>
+                            <div class="item-input">
+                              <input type="text" placeholder="" id='city-picker' value="四川 内江 东兴区"/>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+
+    <script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='./js/sm-linkage-picker.js' charset='utf-8'></script>
+    <script type='text/javascript' src='./js/city-data.js' charset='utf-8'></script>
+
+    <script type='text/javascript'>
+        var raw = $.smConfig.rawCitiesData;
+        var format = function(data) {
+            var result = [];
+            for(var i=0;i<data.length;i++) {
+                var d = data[i];
+                if(d.name === "请选择") continue;
+                result.push(d.name);
+            }
+            if(result.length) return result;
+            return [""];
+        };
+        var sub = function(data) {
+            if(!data.sub) return [""];
+            return format(data.sub);
+        };
+        var getCity = function (cols, parent, ancestor) {
+            switch (cols) {
+                case 1:
+                    for(var i=0;i< raw.length;i++) {
+                        if(raw[i].name === parent){
+                            return sub(raw[i]);
+                        } 
+                    }
+                    return [""]
+                case 2: 
+                    for(var i=0;i< raw.length;i++) {
+                        if(raw[i].name === ancestor) {
+                            for(var j=0;j< raw[i].sub.length;j++) {
+                                if(raw[i].sub[j].name === parent) {
+                                    return sub(raw[i].sub[j]);
+                                }
+                            }
+                        }
+                    }
+                    return [""]
+                default:
+                    return [""]
+            }
+        }
+        $("#city-picker").cityPicker({
+          toolbarTemplate: '<header class="bar bar-nav">\
+          <button class="button button-link pull-right close-picker">确定</button>\
+          <h1 class="title">请选择</h1>\
+          </header>',
+          getCols: function (cols, parent, ancestor) {
+            return getCity(cols, parent, ancestor);
+          }
+        });
+    </script>
+
+
+  </body>
+</html>
